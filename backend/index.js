@@ -16,6 +16,10 @@ app.use(express.json());
 //task routes
 app.use("/api/tasks", taskRouter);
 
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
+
 //connect to mongodb and start server
 connectDB()
   .then(() => {
