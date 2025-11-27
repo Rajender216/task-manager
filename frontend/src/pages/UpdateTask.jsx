@@ -21,7 +21,7 @@ const UpdateTask = () => {
     const fetchTask = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/tasks/${id}`
         );
 
         setFormData({

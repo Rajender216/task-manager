@@ -1,79 +1,147 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-const TaskDetail = () => {
-  const [task, setTask] = useState({});
+const UpdateTask = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    status: "todo",
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  // Fetch existing task by ID
   useEffect(() => {
-    const fetchUserDetail = async () => {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`
-      );
-      setTask(res.data);
-    };
-    fetchUserDetail();
-  }, []);
+    const fetchTask = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/tasks/${id}`
+        );
 
-  if (!task) {
+        setFormData({
+          title: res.data.title,
+          description: res.data.description,
+          status: res.data.status,
+        });
+      } catch (err) {
+        setError("Failed to load task");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTask();
+  }, [id]);
+
+  // Handle input update
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Submit update request
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`,
+        formData
+      );
+
+      setMessage("Task updated successfully");
+      setTimeout(() => navigate(`/task/${id}`), 800);
+    } catch (err) {
+      setError("Error updating task");
+    }
+  };
+
+  if (loading)
     return (
-      <div className="flex justify-center items-center h-screen text-xl font-semibold">
-        Task not found
+      <div className="flex justify-center items-center h-screen text-xl">
+        Loading...
       </div>
     );
-  }
 
   return (
-    <div className="flex justify-center items-center w-full px-4 py-6">
-      <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-lg">
-        <h2 className="text-2xl font-bold mb-4">{task.title}</h2>
+    <div className="flex justify-center items-center w-full mt-6">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 bg-white shadow-md p-6 rounded-xl w-full max-w-md"
+      >
+        <h2 className="text-xl font-bold text-center">Update Task</h2>
 
-        <p className="text-gray-700 mb-4">{task.description}</p>
-
-        <div className="mb-3">
-          <span className="font-semibold">Status: </span>
-          <span
-            className={`px-2 py-1 text-white text-xs rounded-full ${
-              task.status === "todo"
-                ? "bg-blue-600"
-                : task.status === "completed"
-                ? "bg-green-600"
-                : "bg-orange-600"
-            }`}
-          >
-            {task.status}
-          </span>
+        {/* Title */}
+        <div className="flex flex-col">
+          <label className="font-semibold">Title</label>
+          <input
+            type="text"
+            name="title"
+            className="border rounded-lg px-3 py-2 outline-none focus:border-green-600"
+            value={formData.title}
+            onChange={handleChange}
+            required
+          />
         </div>
 
-        <p className="text-sm text-gray-600">
-          <span className="font-semibold">Created:</span>{" "}
-          {new Date(task.createdAt).toLocaleString()}
-        </p>
-
-        <p className="text-sm text-gray-600 mb-6">
-          <span className="font-semibold">Updated:</span>{" "}
-          {new Date(task.updatedAt).toLocaleString()}
-        </p>
-
-        <div className="flex justify-between">
-          <Link
-            to="/"
-            className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 transition"
-          >
-            Back
-          </Link>
-
-          <Link
-            to={`/update/${id}`}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-          >
-            Update
-          </Link>
+        {/* Description */}
+        <div className="flex flex-col">
+          <label className="font-semibold">Description</label>
+          <textarea
+            name="description"
+            className="border rounded-lg px-3 py-2 outline-none focus:border-green-600"
+            value={formData.description}
+            onChange={handleChange}
+            rows="3"
+            required
+          ></textarea>
         </div>
-      </div>
+
+        {/* Status */}
+        <div className="flex flex-col">
+          <label className="font-semibold">Status</label>
+          <select
+            name="status"
+            className="border rounded-lg px-3 py-2 outline-none focus:border-green-600"
+            value={formData.status}
+            onChange={handleChange}
+          >
+            <option value="todo">Todo</option>
+            <option value="in-progress">In-Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+        >
+          Update Task
+        </button>
+
+        {/* Messages */}
+        {message && (
+          <p className="text-center text-green-600 font-semibold">
+            {message}
+          </p>
+        )}
+        {error && (
+          <p className="text-center text-red-600 font-semibold">{error}</p>
+        )}
+      </form>
     </div>
   );
 };
 
-export default TaskDetail;
+export default UpdateTask;

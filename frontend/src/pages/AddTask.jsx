@@ -32,7 +32,7 @@ const AddTask = () => {
 
     try {
       await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/tasks`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/tasks`,
         formData
       );
 
