@@ -87,7 +87,7 @@ const Dashboard = ({ search }) => {
         {filteredTasks.map((task) => (
           <li
             key={task._id}
-            className="flex flex-wrap justify-between items-start border shadow-sm rounded-xl p-4 bg-[#F1F3F5]"
+            className="flex flex-wrap justify-between items-start border shadow-sm rounded-xl p-4 "
           >
             <div className="w-full sm:w-1/2 font-medium overflow-hidden">
               {task.title}

@@ -1,9 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { ThemeContext } from "../context/ThemeContext";
+import { useContext } from "react";
+
 
 const Navbar = ({ onSearch }) => {
+    const { theme, toggleTheme } = useContext(ThemeContext);
   return (
-    <nav className="flex flex-wrap gap-4 justify-between items-center px-4 py-3 shadow-md bg-white w-full mb-4">
+    <nav className="flex flex-wrap gap-4 justify-between items-center px-4 py-3 shadow-md w-full mb-4">
       <Link to="/">
         <div className="text-2xl font-bold bg-green-700 text-white px-3 py-1 rounded-xl">
           Task-Manager
@@ -25,6 +29,10 @@ const Navbar = ({ onSearch }) => {
       >
         Add Task
       </Link>
+
+      <button onClick={toggleTheme}>
+      {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+    </button>
     </nav>
   );
 };

@@ -51,7 +51,7 @@ const AddTask = () => {
     <div className="flex justify-center items-center w-full mt-6">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 bg-white shadow-md p-6 rounded-xl w-full max-w-md"
+        className="flex flex-col gap-4  shadow-md p-6 rounded-xl w-full max-w-md"
       >
         <h2 className="text-xl font-bold text-center">Add New Task</h2>
 
