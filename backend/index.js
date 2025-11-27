@@ -12,10 +12,10 @@ const app = express();
 
 app.use(
   cors(
-    (origin = [
+    ({origin : [
       "https://task-manager-tawny-gamma.vercel.app",
       "http://localhost:5173",
-    ])
+    ]})
   )
 );
 app.use(express.json());
