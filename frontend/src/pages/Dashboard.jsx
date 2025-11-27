@@ -8,7 +8,9 @@ const Dashboard = ({ search }) => {
   const [sortOrder, setSortOrder] = useState("newest");
 
   const fetchData = async () => {
-    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/tasks`);
+    const res = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/tasks`
+    );
     setTasks(res.data);
   };
 
@@ -17,6 +19,8 @@ const Dashboard = ({ search }) => {
   }, []);
 
   const handleDelete = async (id) => {
+    const res = confirm("Do you want to delete it?");
+    if (!res) return;
     await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/tasks/${id}`);
     fetchData();
   };

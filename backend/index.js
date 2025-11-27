@@ -10,7 +10,14 @@ const PORT = process.env.PORT || 5000;
 //initialize express app
 const app = express();
 
-app.use(cors());
+app.use(
+  cors(
+    (origin = [
+      "https://task-manager-tawny-gamma.vercel.app",
+      "http://localhost:5173",
+    ])
+  )
+);
 app.use(express.json());
 
 //task routes
